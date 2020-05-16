@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "omni-social-app",
+    "name": "OMNI social app",
     "slug": "omni-social-app",
     "platforms": [
       "ios",
@@ -23,6 +23,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "sdkVersion": "37.0.0",
+    "description": ""
   }
 }

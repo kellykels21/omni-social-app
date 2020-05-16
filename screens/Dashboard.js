@@ -1,6 +1,8 @@
-import * as React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet, processColor } from "react-native";
 import VerticalLister from "../components/VerticalLister";
+import * as Location from "expo-location";
+import { GOOGLE_API_KEY } from "react-native-dotenv";
 
 const DATA = [
   {
@@ -38,6 +40,43 @@ const DATA = [
 ];
 
 function Dashboard({ navigation }) {
+  const [venues, setVenues] = useState([]);
+
+  async function fetchLocalVenues() {
+    //LOCATION PERMISSIONS
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMsg("Permission to access location was denied");
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    console.log(location);
+
+    //GOOGLE API REQUEST
+    var requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+        location.coords.latitude +
+        "," +
+        location.coords.longitude +
+        "&type=bar&key=" +
+        GOOGLE_API_KEY +
+        "&keyword=bar&radius=3000&opennow=true",
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
+  }
+
+  useEffect(() => {
+    fetchLocalVenues();
+  });
+
   return (
     <View style={styles.container}>
       <View style={[styles.ListContainer, { flex: 1, backgroundColor: "red" }]}>
