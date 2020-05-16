@@ -1,10 +1,24 @@
 import * as React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet } from "react-native";
+import VenueItem from "./VenueItem";
 
-function Dashboard() {
+function VerticalLister({ data, navigation }) {
   return (
     <View>
-      <Text>List</Text>
+      <FlatList
+        data={data}
+        renderItem={({ item }) => (
+          <VenueItem
+            placeID={item.placeID}
+            name={item.name}
+            rsvps={item.rsvps}
+            numOfPeopleWaiting={item.numOfPeopleWaiting}
+            status={item.status}
+            navigation={navigation}
+          />
+        )}
+        keyExtractor={(item) => item.placeID}
+      />
     </View>
   );
 }
@@ -15,4 +29,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Dashboard;
+export default VerticalLister;
