@@ -5,64 +5,29 @@ import * as Location from "expo-location";
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import axios from "axios";
 
-const DATA = [
-  {
-    placeID: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    name: "Venue 1",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    name: "Venue 2",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "58694a0f-3da1-471f-bd96-145571e29d72",
-    name: "Venue 12",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "58694a0f-3da1-471f-bd96-145571e29d71",
-    name: "Venue 3",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-];
-
 function Dashboard({ navigation }) {
   const [venues, setVenues] = useState([]);
 
   useEffect(() => {
     async function saveVenue(venue) {
+      let photoReference = "";
+
+      if (venue.photos) {
+        photoReference = venue.photos[0].photo_reference;
+      }
+
       var venueData = JSON.stringify({
         name: venue.name,
         placeId: venue.place_id,
         location: {
           type: "Point",
           coordinates: [
-            venue.geometry.location.lat,
             venue.geometry.location.lng,
+            venue.geometry.location.lat,
           ],
         },
-        imageUrl:
-          "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" +
-          venue.photos[0].photo_reference +
-          "key=" +
-          GOOGLE_API_KEY,
+        photoReference,
       });
-
-      console.log(venueData);
 
       try {
         await axios({
@@ -84,7 +49,7 @@ function Dashboard({ navigation }) {
       }
 
       let location = await Location.getCurrentPositionAsync({});
-      const radius = 1500;
+      const radius = 8000;
 
       const results = await axios.get(
         "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
@@ -101,6 +66,24 @@ function Dashboard({ navigation }) {
       return results.data;
     }
 
+    async function getLocalOmniVenues() {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      const data = await axios.get(
+        "http://10.0.0.118:3000/venue/local?lat=" +
+          location.coords.latitude +
+          "&long=" +
+          location.coords.longitude
+      );
+
+      await setVenues(data);
+    }
+
     async function loadDashboardData() {
       const localVenues = await fetchLocalVenues();
 
@@ -109,22 +92,21 @@ function Dashboard({ navigation }) {
       }
 
       console.log("Saved All Venues Successfully");
+
+      await getLocalOmniVenues();
     }
 
     loadDashboardData();
-  });
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={[styles.ListContainer, { flex: 1, backgroundColor: "red" }]}>
+      <View style={[styles.ListContainer, { flex: 1 }]}>
         <Text>Friends</Text>
       </View>
 
-      <View
-        style={[styles.ListContainer, { flex: 6, backgroundColor: "blue" }]}
-      >
-        <Text>Places</Text>
-        <VerticalLister data={DATA} navigation={navigation} />
+      <View style={[styles.ListContainer, { flex: 6 }]}>
+        <VerticalLister venues={venues} navigation={navigation} />
       </View>
     </View>
   );
@@ -133,6 +115,7 @@ function Dashboard({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#100D38",
   },
   ListContainer: {
     width: "100%",
