@@ -10,12 +10,6 @@ function Dashboard({ navigation }) {
 
   useEffect(() => {
     async function saveVenue(venue) {
-      let photoReference = "";
-
-      if (venue.photos) {
-        photoReference = venue.photos[0].photo_reference;
-      }
-
       var venueData = JSON.stringify({
         name: venue.name,
         placeId: venue.place_id,
@@ -26,7 +20,7 @@ function Dashboard({ navigation }) {
             venue.geometry.location.lat,
           ],
         },
-        photoReference,
+        photoReference: venue.photos ? venue.photos[0].photo_reference : null,
       });
 
       try {

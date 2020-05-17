@@ -57,14 +57,14 @@ const styles = StyleSheet.create({
   imageContainer: {
     flex: 3,
     alignItems: "center",
-    padding: 10,
+    margin: 10,
   },
   dataContainer: {
     flex: 1,
     alignItems: "flex-end",
     justifyContent: "flex-end",
-    paddingBottom: 40,
-    paddingRight: 5,
+    margin: 40,
+    marginRight: 5,
   },
   row: {
     flexDirection: "row",
