@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, processColor } from "react-native";
 import VerticalLister from "../components/VerticalLister";
 import * as Location from "expo-location";
 import { GOOGLE_API_KEY } from "react-native-dotenv";
+import axios from "axios";
 
 const DATA = [
   {
@@ -42,39 +43,75 @@ const DATA = [
 function Dashboard({ navigation }) {
   const [venues, setVenues] = useState([]);
 
-  async function fetchLocalVenues() {
-    //LOCATION PERMISSIONS
-    let { status } = await Location.requestPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
+  useEffect(() => {
+    async function saveVenue(venue) {
+      var venueData = JSON.stringify({
+        name: venue.name,
+        placeId: venue.place_id,
+        location: {
+          type: "Point",
+          coordinates: [
+            venue.geometry.location.lat,
+            venue.geometry.location.lng,
+          ],
+        },
+        imageUrl:
+          "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" +
+          venue.photos[0].photo_reference +
+          "key=" +
+          GOOGLE_API_KEY,
+      });
+
+      console.log(venueData);
+
+      try {
+        await axios({
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          url: "http://10.0.0.118:3000/venue/new",
+          data: venueData,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
+    async function fetchLocalVenues() {
+      //LOCATION PERMISSIONS
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+      }
 
-    //GOOGLE API REQUEST
-    var requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
+      let location = await Location.getCurrentPositionAsync({});
+      const radius = 1500;
 
-    fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-        location.coords.latitude +
-        "," +
-        location.coords.longitude +
-        "&type=bar&key=" +
-        GOOGLE_API_KEY +
-        "&keyword=bar&radius=3000&opennow=true",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-  }
+      const results = await axios.get(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+          location.coords.latitude +
+          "," +
+          location.coords.longitude +
+          "&type=bar&key=" +
+          GOOGLE_API_KEY +
+          "&keyword=bar&radius=" +
+          radius +
+          " &opennow=true"
+      );
 
-  useEffect(() => {
-    fetchLocalVenues();
+      return results.data;
+    }
+
+    async function loadDashboardData() {
+      const localVenues = await fetchLocalVenues();
+
+      for (const venue of localVenues.results) {
+        await saveVenue(venue);
+      }
+
+      console.log("Saved All Venues Successfully");
+    }
+
+    loadDashboardData();
   });
 
   return (
