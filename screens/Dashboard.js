@@ -3,91 +3,104 @@ import { View, Text, StyleSheet, processColor } from "react-native";
 import VerticalLister from "../components/VerticalLister";
 import * as Location from "expo-location";
 import { GOOGLE_API_KEY } from "react-native-dotenv";
-
-const DATA = [
-  {
-    placeID: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    name: "Venue 1",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    name: "Venue 2",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "58694a0f-3da1-471f-bd96-145571e29d72",
-    name: "Venue 12",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-  {
-    placeID: "58694a0f-3da1-471f-bd96-145571e29d71",
-    name: "Venue 3",
-    rsvps: ["userid_1", "userid_2", "userid_3"],
-    numOfPeopleWaiting: ["userid_1", "userid_2", "userid_3"],
-    status: 1,
-    imageUrl: "",
-  },
-];
+import axios from "axios";
 
 function Dashboard({ navigation }) {
   const [venues, setVenues] = useState([]);
 
-  async function fetchLocalVenues() {
-    //LOCATION PERMISSIONS
-    let { status } = await Location.requestPermissionsAsync();
-    if (status !== "granted") {
-      setErrorMsg("Permission to access location was denied");
+  useEffect(() => {
+    async function saveVenue(venue) {
+      var venueData = JSON.stringify({
+        name: venue.name,
+        placeId: venue.place_id,
+        location: {
+          type: "Point",
+          coordinates: [
+            venue.geometry.location.lng,
+            venue.geometry.location.lat,
+          ],
+        },
+        photoReference: venue.photos ? venue.photos[0].photo_reference : null,
+      });
+
+      try {
+        await axios({
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+          url: "http://10.0.0.118:3000/venue/new",
+          data: venueData,
+        });
+      } catch (error) {
+        console.log(error);
+      }
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    console.log(location);
+    async function fetchLocalVenues() {
+      //LOCATION PERMISSIONS
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+      }
 
-    //GOOGLE API REQUEST
-    var requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
+      let location = await Location.getCurrentPositionAsync({});
+      const radius = 8000;
 
-    fetch(
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
-        location.coords.latitude +
-        "," +
-        location.coords.longitude +
-        "&type=bar&key=" +
-        GOOGLE_API_KEY +
-        "&keyword=bar&radius=3000&opennow=true",
-      requestOptions
-    )
-      .then((response) => response.text())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
-  }
+      const results = await axios.get(
+        "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" +
+          location.coords.latitude +
+          "," +
+          location.coords.longitude +
+          "&type=bar&key=" +
+          GOOGLE_API_KEY +
+          "&keyword=bar&radius=" +
+          radius +
+          " &opennow=true"
+      );
 
-  useEffect(() => {
-    fetchLocalVenues();
-  });
+      return results.data;
+    }
+
+    async function getLocalOmniVenues() {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+
+      const data = await axios.get(
+        "http://10.0.0.118:3000/venue/local?lat=" +
+          location.coords.latitude +
+          "&long=" +
+          location.coords.longitude
+      );
+
+      await setVenues(data);
+    }
+
+    async function loadDashboardData() {
+      const localVenues = await fetchLocalVenues();
+
+      for (const venue of localVenues.results) {
+        await saveVenue(venue);
+      }
+
+      console.log("Saved All Venues Successfully");
+
+      await getLocalOmniVenues();
+    }
+
+    loadDashboardData();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={[styles.ListContainer, { flex: 1, backgroundColor: "red" }]}>
+      <View style={[styles.ListContainer, { flex: 1 }]}>
         <Text>Friends</Text>
       </View>
 
-      <View
-        style={[styles.ListContainer, { flex: 6, backgroundColor: "blue" }]}
-      >
-        <Text>Places</Text>
-        <VerticalLister data={DATA} navigation={navigation} />
+      <View style={[styles.ListContainer, { flex: 6 }]}>
+        <VerticalLister venues={venues} navigation={navigation} />
       </View>
     </View>
   );
@@ -96,6 +109,7 @@ function Dashboard({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#100D38",
   },
   ListContainer: {
     width: "100%",

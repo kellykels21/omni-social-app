@@ -1,23 +1,24 @@
 import * as React from "react";
-import { View, FlatList, StyleSheet } from "react-native";
+import { View, FlatList, StyleSheet, Text } from "react-native";
 import VenueItem from "./VenueItem";
 
-function VerticalLister({ data, navigation }) {
+function VerticalLister({ venues, navigation }) {
   return (
     <View>
+      <Text style={styles.text}>What's Going on Now</Text>
       <FlatList
-        data={data}
+        data={venues.data}
         renderItem={({ item }) => (
           <VenueItem
-            placeID={item.placeID}
+            placeID={item.placeId}
             name={item.name}
             rsvps={item.rsvps}
-            numOfPeopleWaiting={item.numOfPeopleWaiting}
             status={item.status}
+            photoReference={item.photoReference}
             navigation={navigation}
           />
         )}
-        keyExtractor={(item) => item.placeID}
+        keyExtractor={(item) => item.placeId}
       />
     </View>
   );
@@ -26,6 +27,11 @@ function VerticalLister({ data, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  text: {
+    color: "white",
+    fontSize: 24,
+    margin: 10,
   },
 });
 
