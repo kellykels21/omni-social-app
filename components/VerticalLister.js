@@ -4,7 +4,7 @@ import VenueItem from "./VenueItem";
 
 function VerticalLister({ venues, navigation }) {
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.text}>What's Going on Now</Text>
       <FlatList
         data={venues.data}
@@ -26,12 +26,12 @@ function VerticalLister({ venues, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    paddingTop: 25,
+    margin: 10,
   },
   text: {
     color: "white",
     fontSize: 24,
-    margin: 10,
   },
 });
 

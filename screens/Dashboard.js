@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, processColor } from "react-native";
 import VerticalLister from "../components/VerticalLister";
+import HorizontalLister from "../components/HorizontalLister";
 import * as Location from "expo-location";
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import axios from "axios";
@@ -102,11 +103,11 @@ function Dashboard({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.ListContainer, { flex: 1 }]}>
-        <Text>Friends </Text>
+      <View style={[styles.HorizontalListContainer, { flex: 1 }]}>
+        <HorizontalLister navigation={navigation} />
       </View>
 
-      <View style={[styles.ListContainer, { flex: 6 }]}>
+      <View style={[styles.VerticalListContainer, { flex: 6 }]}>
         <VerticalLister venues={venues} navigation={navigation} />
       </View>
     </View>
@@ -118,8 +119,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#100D38",
   },
-  ListContainer: {
+  VerticalListContainer: {
     width: "100%",
+    marginTop: 20,
+  },
+  HorizontalListContainer: {
+    width: "100%",
+    marginTop: 50,
   },
 });
 
