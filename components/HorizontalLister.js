@@ -36,7 +36,8 @@ const DATA = [
     imageUrl: "someURL",
   },
 ];
-function HorizontalLister({ venues, navigation }) {
+
+function HorizontalLister({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Friends</Text>

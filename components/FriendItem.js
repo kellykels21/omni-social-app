@@ -1,6 +1,5 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { color } from "react-native-reanimated";
 
 function FriendItem({ _id, imageUrl, navigation }) {
   return (
@@ -11,6 +10,7 @@ function FriendItem({ _id, imageUrl, navigation }) {
             style={styles.circle}
             source={require("../img/profile_placeholder.jpg")}
           />
+
           <Text style={{ color: "white", marginTop: 5 }}>Friend</Text>
         </View>
       </TouchableOpacity>
