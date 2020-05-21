@@ -4,6 +4,7 @@ import VerticalLister from "../components/VerticalLister";
 import * as Location from "expo-location";
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import axios from "axios";
+import { AsyncStorage } from "react-native";
 
 function Dashboard({ navigation }) {
   const [venues, setVenues] = useState([]);
@@ -93,10 +94,16 @@ function Dashboard({ navigation }) {
     loadDashboardData();
   }, []);
 
+  useEffect(() => {
+    AsyncStorage.getItem("@UserAuthID", (err, result) => {
+      console.log("AUTH ID: " + result);
+    });
+  }, []);
+
   return (
     <View style={styles.container}>
       <View style={[styles.ListContainer, { flex: 1 }]}>
-        <Text>Friends</Text>
+        <Text>Friends </Text>
       </View>
 
       <View style={[styles.ListContainer, { flex: 6 }]}>
