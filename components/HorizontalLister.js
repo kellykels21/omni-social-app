@@ -40,7 +40,6 @@ const DATA = [
 function HorizontalLister({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Friends</Text>
       <FlatList
         data={DATA}
         renderItem={({ item }) => (
@@ -56,11 +55,7 @@ function HorizontalLister({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 10,
-  },
-  text: {
-    color: "white",
-    fontSize: 24,
+    marginLeft: 10,
   },
 });
 

@@ -16,6 +16,8 @@ import { AsyncStorage } from "react-native";
 import * as Google from "expo-google-app-auth";
 import * as Facebook from "expo-facebook";
 
+import AppleSignInButton from "../../components/AppleSignInButton";
+
 function SignIn({ navigation }) {
   async function facebookLogin() {
     try {
@@ -69,7 +71,7 @@ function SignIn({ navigation }) {
       await axios({
         method: "post",
         headers: { "Content-Type": "application/json" },
-        url: "http://10.0.0.118:3000/user/new",
+        url: OMNI_API_URL + "/user/new",
         data: userData,
       });
     } catch (error) {
@@ -83,12 +85,12 @@ function SignIn({ navigation }) {
       throw error;
     }
 
-    navigation.navigate("Main");
+    navigation.navigate("Tabs", { screen: "Home" });
   }
 
   useEffect(() => {
     AsyncStorage.getItem("@UserAuthID", (err, result) => {
-      navigation.navigate("Main");
+      navigation.navigate("Tabs", { screen: "Home" });
     });
   }, []);
 
@@ -116,11 +118,7 @@ function SignIn({ navigation }) {
           <Text style={styles.text}> Google </Text>
         </View>
       </TouchableHighlight>
-      <TouchableHighlight style={styles.button}>
-        <View style={styles.ButtonTextContainer}>
-          <Text style={styles.text}> Apple </Text>
-        </View>
-      </TouchableHighlight>
+      <AppleSignInButton navigation={navigation} />
     </View>
   );
 }
