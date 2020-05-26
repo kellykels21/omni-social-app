@@ -3,9 +3,10 @@ import { View, StyleSheet, Text } from "react-native";
 import { OMNI_API_URL } from "react-native-dotenv";
 
 function UserDetails({ route, navigation }) {
+  const { authId } = route.params;
   return (
     <View style={styles.container}>
-      <Text>User Details</Text>
+      <Text>{authId}</Text>
     </View>
   );
 }

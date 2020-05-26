@@ -5,12 +5,11 @@ function FriendListItem({ name, authId, navigation }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("UserDetails"),
-            {
-              authId,
-            };
-        }}
+        onPress={() =>
+          navigation.navigate("UserDetails", {
+            authId,
+          })
+        }
       >
         <View style={styles.item}>
           <View style={styles.profilePic}>
