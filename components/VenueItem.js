@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { GOOGLE_API_KEY } from "react-native-dotenv";
+import { GOOGLE_API_KEY, OMNI_API_URL } from "react-native-dotenv";
 
 function VenueItem({
   placeID,
@@ -17,8 +17,10 @@ function VenueItem({
       <View style={styles.container}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("MyModal", {
+            navigation.navigate("VenueDetails", {
               placeID: placeID,
+              photoReference,
+              name,
             })
           }
         >

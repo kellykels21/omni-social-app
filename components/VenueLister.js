@@ -2,10 +2,9 @@ import * as React from "react";
 import { View, FlatList, StyleSheet, Text } from "react-native";
 import VenueItem from "./VenueItem";
 
-function VerticalLister({ venues, navigation }) {
+function VenueLister({ venues, navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>What's Going on Now</Text>
       <FlatList
         data={venues.data}
         renderItem={({ item }) => (
@@ -27,12 +26,8 @@ function VerticalLister({ venues, navigation }) {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 25,
-    margin: 10,
-  },
-  text: {
-    color: "white",
-    fontSize: 24,
+    marginLeft: 10,
   },
 });
 
-export default VerticalLister;
+export default VenueLister;

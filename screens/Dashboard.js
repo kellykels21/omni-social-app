@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, processColor } from "react-native";
-import VerticalLister from "../components/VerticalLister";
-import HorizontalLister from "../components/HorizontalLister";
+import VenueLister from "../components/VenueLister";
+import FriendsHorizontalLister from "../components/FriendsHorizontalLister";
 import * as Location from "expo-location";
-import { GOOGLE_API_KEY } from "react-native-dotenv";
+import { GOOGLE_API_KEY, OMNI_API_URL } from "react-native-dotenv";
 import axios from "axios";
 import { AsyncStorage } from "react-native";
 
@@ -29,7 +29,7 @@ function Dashboard({ navigation }) {
         await axios({
           method: "post",
           headers: { "Content-Type": "application/json" },
-          url: "http://10.0.0.118:3000/venue/new",
+          url: OMNI_API_URL + "/venue/new",
           data: venueData,
         });
       } catch (error) {
@@ -71,7 +71,8 @@ function Dashboard({ navigation }) {
       let location = await Location.getCurrentPositionAsync({});
 
       const data = await axios.get(
-        "http://10.0.0.118:3000/venue/local?lat=" +
+        OMNI_API_URL +
+          "/venue/local?lat=" +
           location.coords.latitude +
           "&long=" +
           location.coords.longitude
@@ -104,11 +105,17 @@ function Dashboard({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={[styles.HorizontalListContainer, { flex: 1 }]}>
-        <HorizontalLister navigation={navigation} />
+        <Text style={styles.text}>Friends</Text>
+        <FriendsHorizontalLister navigation={navigation} />
       </View>
 
       <View style={[styles.VerticalListContainer, { flex: 6 }]}>
-        <VerticalLister venues={venues} navigation={navigation} />
+        <Text style={styles.text}>What's Going on Now</Text>
+        <VenueLister
+          style={styles.VerticalList}
+          venues={venues}
+          navigation={navigation}
+        />
       </View>
     </View>
   );
@@ -121,11 +128,16 @@ const styles = StyleSheet.create({
   },
   VerticalListContainer: {
     width: "100%",
-    marginTop: 20,
+    marginTop: 50,
   },
   HorizontalListContainer: {
     width: "100%",
     marginTop: 50,
+  },
+  text: {
+    color: "white",
+    fontSize: 24,
+    marginLeft: 15,
   },
 });
 
