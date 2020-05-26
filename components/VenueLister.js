@@ -2,7 +2,7 @@ import * as React from "react";
 import { View, FlatList, StyleSheet, Text } from "react-native";
 import VenueItem from "./VenueItem";
 
-function VerticalLister({ venues, navigation }) {
+function VenueLister({ venues, navigation }) {
   return (
     <View style={styles.container}>
       <FlatList
@@ -30,4 +30,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VerticalLister;
+export default VenueLister;

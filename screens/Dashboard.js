@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, processColor } from "react-native";
-import VerticalLister from "../components/VerticalLister";
-import HorizontalLister from "../components/HorizontalLister";
+import VenueLister from "../components/VenueLister";
+import FriendsHorizontalLister from "../components/FriendsHorizontalLister";
 import * as Location from "expo-location";
 import { GOOGLE_API_KEY, OMNI_API_URL } from "react-native-dotenv";
 import axios from "axios";
@@ -106,12 +106,16 @@ function Dashboard({ navigation }) {
     <View style={styles.container}>
       <View style={[styles.HorizontalListContainer, { flex: 1 }]}>
         <Text style={styles.text}>Friends</Text>
-        <HorizontalLister navigation={navigation} />
+        <FriendsHorizontalLister navigation={navigation} />
       </View>
 
       <View style={[styles.VerticalListContainer, { flex: 6 }]}>
         <Text style={styles.text}>What's Going on Now</Text>
-        <VerticalLister venues={venues} navigation={navigation} />
+        <VenueLister
+          style={styles.VerticalList}
+          venues={venues}
+          navigation={navigation}
+        />
       </View>
     </View>
   );

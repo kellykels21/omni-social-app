@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Dashboard from "./screens/Dashboard";
 import Friends from "./screens/Friends";
 import VenueDetails from "./screens/VenueDetails";
+import UserDetails from "./screens/UserDetails";
 import SignIn from "./screens/Login/SignIn";
 
 const MainStack = createStackNavigator();
@@ -63,12 +64,11 @@ function TabStack() {
         lazyLoad: true,
         upperCaseLabel: false,
         indicatorStyle: {
-          backgroundColor: "transparent",
+          backgroundColor: "red",
         },
         style: {
           backgroundColor: "rgba(22, 22, 22, 0.0)",
           borderTopWidth: 0,
-
           position: "absolute",
           left: 0,
           right: 0,
@@ -76,12 +76,12 @@ function TabStack() {
         },
       }}
     >
-      <Tab.Screen name="Friends" component={FriendsPageStack} />
       <Tab.Screen
         name="Home"
         component={HomeStackScreen}
         options={{ headerShown: false, gestureEnabled: false }}
       />
+      <Tab.Screen name="Friends" component={FriendsPageStack} />
     </Tab.Navigator>
   );
 }
@@ -103,6 +103,15 @@ function App() {
         <RootStack.Screen
           name="VenueDetails"
           component={VenueDetails}
+          options={{
+            headerTitle: "",
+            headerTransparent: true,
+            headerBackTitle: " ",
+          }}
+        />
+        <RootStack.Screen
+          name="UserDetails"
+          component={UserDetails}
           options={{
             headerTitle: "",
             headerTransparent: true,

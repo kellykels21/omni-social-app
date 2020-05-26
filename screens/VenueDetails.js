@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   AsyncStorage,
 } from "react-native";
-import HorizontalLister from "../components/HorizontalLister";
+import FriendsHorizontalLister from "../components/FriendsHorizontalLister";
 import { GOOGLE_API_KEY, OMNI_API_URL } from "react-native-dotenv";
 import axios from "axios";
 import { createStore } from "redux";
@@ -83,11 +83,11 @@ function VenueDetails({ route, navigation }) {
       </View>
       <View style={[styles.HorizontalListContainer]}>
         <Text style={styles.text}>Friends There Now</Text>
-        <HorizontalLister navigation={navigation} />
+        <FriendsHorizontalLister navigation={navigation} />
       </View>
       <View style={[styles.HorizontalListContainer]}>
         <Text style={styles.text}>Upcoming Events</Text>
-        <HorizontalLister navigation={navigation} />
+        <FriendsHorizontalLister navigation={navigation} />
       </View>
 
       <View style={[styles.HorizontalListContainer]}>

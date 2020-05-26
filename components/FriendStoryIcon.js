@@ -1,7 +1,7 @@
 import * as React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-function FriendItem({ _id, imageUrl, navigation }) {
+function FriendStoryIcon({ _id, imageUrl, navigation }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity>
@@ -37,4 +37,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FriendItem;
+export default FriendStoryIcon;
